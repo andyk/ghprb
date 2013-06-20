@@ -61,6 +61,10 @@ public class Ghprb {
 		return trigger.getDescriptor().getGitHub();
 	}
 
+  /**
+   * This is called by GhprbTrigger.run() which is itself called at each
+   * time interaval according to the cron period set up for the project.
+   */
 	void run() {
 		if(trigger.getUseGitHubHooks() && checked){
 			return;
@@ -69,6 +73,10 @@ public class Ghprb {
 		repository.check();
 	}
 
+  /**
+   * This is called by GhprbTrigger.stop() which is itself called when Jenkins
+   * is cleaning up the plugin before shutting down.
+   */
 	void stop() {
 		repository = null;
 		builds = null;
@@ -169,6 +177,15 @@ public class Ghprb {
 			return this;
 		}
 
+    /**
+     * This is only called once per project that is using the GH Pull Request
+     * Builder when GhprbTrigger.start() is called by the part of Jenkins that
+     * runs registered triggers. It sets up the Ghprb object owned by this
+     * Builder object for future use in the GhprbTrigger.run() function which
+     * will get called periodically if the Trigger was created with a cronSpec
+     * describing the time interval at which the github repo should be polled
+     * for new pull requests.
+     */
 		public Ghprb build(){
 			if(gml == null || pulls == null || gml.trigger == null || gml.project == null){
 				throw new IllegalStateException();

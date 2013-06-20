@@ -58,6 +58,10 @@ public final class GhprbTrigger extends Trigger<AbstractProject<?, ?>> {
 		this.autoCloseFailedPullRequests = autoCloseFailedPullRequests;
 	}
 
+  /**
+   * The main starting point for this plugin, called by Jenkins once
+   * to initialize this plugin for this project.
+   */
 	@Override
 	public void start(AbstractProject<?, ?> project, boolean newInstance) {
 		try{
@@ -114,6 +118,12 @@ public final class GhprbTrigger extends Trigger<AbstractProject<?, ?>> {
 		return values;
 	}
 
+  /**
+   * This function is called by Jenkins every time_interval, which is decided
+   * by the cron spec set up according to this project's config for the
+   * ghprb plugin. At a high level, it calls check() on the object representing
+   * this project's github repo.
+   */
 	@Override
 	public void run() {
 		ml.run();
